@@ -17,123 +17,81 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const Scaffold(
-        body: Center(
-          child: MyColorBox(
-            color: Colors.blue,
-            child: MyColorBox(
-              color: Colors.red,
-              child: MyColorBox(
-                color: Colors.green,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      MyButton(
-                        text: 'First parent',
-                        onPressed: firstParentChangeColor,
-                      ),
-                      SizedBox(height: 20),
-                      MyButton(
-                        text: 'Last parent',
-                        onPressed: lastParentChangeColor,
-                      )
-                    ],
-                  ),
-                ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  bool is24HourTime = true;
+  TimeOfDay? selectedTime; // выбранное пользователем время
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          const SizedBox(height: 100),
+          SwitchListTile(
+              title: Text(
+                is24HourTime ? '24-hour time' : '12-hour time',
               ),
+              value: is24HourTime,
+              onChanged: (value) {
+                setState(() {
+                  is24HourTime = value;
+                });
+              }),
+          ElevatedButton(
+              child: const Text('Select time'),
+              onPressed: () async {
+                selectedTime = await showTimePicker(
+                  // Подпись в верху диалогового виджета
+                  barrierLabel: 'Select time',
+                  // передаем контекст в showTimePicker
+                  context: context,
+                  // устанавливаем начальное время
+                  initialTime: selectedTime ?? TimeOfDay.now(),
+                  // устанавливаем начальный режим
+                  initialEntryMode: TimePickerEntryMode.dial,
+                  // устанавливаем ориентацию
+                  orientation: Orientation.portrait,
+                  // устанавливаем формат времени
+                  builder: (context, child) {
+                    return MediaQuery(
+                      data: MediaQuery.of(context).copyWith(
+                        alwaysUse24HourFormat: is24HourTime,
+                      ),
+                      child: child!,
+                    );
+                  },
+                );
+                setState(() {
+                  // обновляем состояние
+                });
+              }),
+          const SizedBox(height: 100),
+          if (selectedTime != null)
+            Text(
+              'Selected time: ${selectedTime!.format(context)}',
+              style: const TextStyle(fontSize: 20),
+            )
+          else
+            const Text(
+              'No time selected',
+              style: TextStyle(fontSize: 20),
             ),
-          ),
-        ),
+        ],
       ),
     );
-  }
-}
-
-// Функция для поиска самого первого родительского MyColorBoxState в
-// дереве виджетов (относительно контекста) для изменения цвета.
-void firstParentChangeColor(BuildContext context) {
-  final myColorBox = context.findAncestorStateOfType<_MyColorBoxState>();
-  if (myColorBox?._color == Colors.green) {
-    myColorBox?.changeColor(Colors.grey);
-  } else {
-    myColorBox?.changeColor(Colors.green);
-  }
-}
-
-// Функция для поиска самого верхнего родительского MyColorBoxState в
-// дереве виджетов для изменения цвета.
-void lastParentChangeColor(BuildContext context) {
-  final myColorBox = context.findRootAncestorStateOfType<_MyColorBoxState>();
-  if (myColorBox?._color == Colors.blue) {
-    myColorBox?.changeColor(Colors.brown);
-  } else {
-    myColorBox?.changeColor(Colors.blue);
-  }
-}
-
-class MyButton extends StatelessWidget {
-  final void Function(BuildContext context) onPressed;
-  final String text;
-  const MyButton({
-    super.key,
-    required this.onPressed,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        onPressed(context);
-      },
-      child: Text(text),
-    );
-  }
-}
-
-class MyColorBox extends StatefulWidget {
-  static const padding = 30.0;
-  final Color color;
-  final Widget? child;
-
-  const MyColorBox({
-    super.key,
-    required this.color,
-    this.child,
-  });
-
-  @override
-  State<MyColorBox> createState() => _MyColorBoxState();
-}
-
-class _MyColorBoxState extends State<MyColorBox> {
-  Color _color = Colors.transparent;
-  Widget? _child;
-
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      _color = widget.color;
-      _child = widget.child;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(
-        MyColorBox.padding,
-      ),
-      color: _color,
-      child: _child,
-    );
-  }
-
-  void changeColor(Color color) {
-    setState(() {
-      _color = color;
-    });
   }
 }
