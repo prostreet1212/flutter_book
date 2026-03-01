@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -24,72 +25,66 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
+
   final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-enum CreditRating {
-  aaa('AAA'),
-  aaPlus('AA+'),
-  cMinus('C-');
-
-  final String text;
-  const CreditRating(this.text);
+enum FontFamily {
+  ptserif('PTSerif'),
+  amaticsc('AmaticSC');
+  final String family;
+  const FontFamily(this.family);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  CreditRating currentRating = CreditRating.aaa;
+  FontFamily myFontFamily = FontFamily.ptserif;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 60),
-                SegmentedButton<CreditRating>(
-                  showSelectedIcon: false,
-                  // список сегментов
-                    segments: <ButtonSegment<CreditRating>>[
-                      ButtonSegment<CreditRating>(
-                        // значение ButtonSegment
-                        value: CreditRating.aaa,
-                        // текст внутри ButtonSegment
-                        label: Text(CreditRating.aaa.text),
-                      ),
-                      ButtonSegment<CreditRating>(
-                        value: CreditRating.aaPlus,
-                        label: Text(CreditRating.aaPlus.text),
-                      ),
-                      ButtonSegment<CreditRating>(
-                        value: CreditRating.cMinus,
-                        label: Text(CreditRating.cMinus.text),
-                      ),
-                      ButtonSegment<CreditRating>(
-                        value: CreditRating.cMinus,
-                        label: Text(CreditRating.cMinus.text),
-                      )
-                    ],
-                    selected: <CreditRating>{
-                      currentRating
-                    },
-                    onSelectionChanged: (Set<CreditRating> newSelection) {
-                      setState(() {
-                        // обновляем текущее значение рейтинга
-                        currentRating = newSelection.first;
-                      });
-                    }),
-                const SizedBox(height: 20),
-                Text(
-                  currentRating.text,
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SegmentedButton<FontFamily>(
+              // список сегментов
+                segments: <ButtonSegment<FontFamily>>[
+                  ButtonSegment<FontFamily>(
+                    // значение ButtonSegment
+                    value: FontFamily.ptserif,
+                    // текст внутри ButtonSegment
+                    label: Text(FontFamily.ptserif.family),
                   ),
-                ),
-              ],
-            )));
+                  ButtonSegment<FontFamily>(
+                    value: FontFamily.amaticsc,
+                    label: Text(FontFamily.amaticsc.family),
+                  ),
+                ],
+                selected: <FontFamily>{
+                  myFontFamily
+                },
+                onSelectionChanged: (Set<FontFamily> newSelection) {
+                  setState(() {
+                    // обновляем текущее значение рейтинга
+                    myFontFamily = newSelection.first;
+                  });
+                }),
+            const SizedBox(height: 60),
+            Text('Hello, ${myFontFamily.family} font style!',
+                style: TextStyle(
+                  // указываем семейство шрифта
+                  fontFamily: myFontFamily.family,
+                  fontSize: 24,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w900,
+                  fontStyle: FontStyle.italic,
+                )),
+          ],
+        ),
+      ),
+    );
   }
 }
