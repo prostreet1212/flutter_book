@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -13,9 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -32,56 +29,53 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-enum FontFamily {
-  ptserif('PTSerif'),
-  amaticsc('AmaticSC');
-  final String family;
-  const FontFamily(this.family);
-}
-
 class _MyHomePageState extends State<MyHomePage> {
-  FontFamily myFontFamily = FontFamily.ptserif;
+  void openBottomSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 200,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Text('BottomSheet'),
+                ElevatedButton(
+                  child: const Text('Close'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SegmentedButton<FontFamily>(
-              // список сегментов
-                segments: <ButtonSegment<FontFamily>>[
-                  ButtonSegment<FontFamily>(
-                    // значение ButtonSegment
-                    value: FontFamily.ptserif,
-                    // текст внутри ButtonSegment
-                    label: Text(FontFamily.ptserif.family),
-                  ),
-                  ButtonSegment<FontFamily>(
-                    value: FontFamily.amaticsc,
-                    label: Text(FontFamily.amaticsc.family),
-                  ),
-                ],
-                selected: <FontFamily>{
-                  myFontFamily
-                },
-                onSelectionChanged: (Set<FontFamily> newSelection) {
-                  setState(() {
-                    // обновляем текущее значение рейтинга
-                    myFontFamily = newSelection.first;
-                  });
-                }),
-            const SizedBox(height: 60),
-            Text('Hello, ${myFontFamily.family} font style!',
-                style: TextStyle(
-                  // указываем семейство шрифта
-                  fontFamily: myFontFamily.family,
-                  fontSize: 24,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w900,
-                  fontStyle: FontStyle.italic,
-                )),
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            const SizedBox(height: 100),
+            const Text(
+              '<(˶ᵔᵕᵔ˶)>',
+              style: TextStyle(fontSize: 50),
+            ),
+            const SizedBox(height: 50),
+            ElevatedButton(
+              child: const Text('Open BottomSheet'),
+              onPressed: () {
+                openBottomSheet(context);
+              },
+            ),
+            const SizedBox(height: 50),
           ],
         ),
       ),
