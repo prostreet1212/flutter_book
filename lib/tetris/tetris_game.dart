@@ -2,8 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_book/src/board.dart';
-import 'package:flutter_book/src/game.dart';
+import 'package:flutter_book/tetris/src/board.dart';
+import 'package:flutter_book/tetris/src/game.dart';
+
 
 
 /// Имплементация игры Тетрис
