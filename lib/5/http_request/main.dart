@@ -1,3 +1,7 @@
+
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -47,7 +51,8 @@ class _HomePageState extends State<HomePage> {
     //final url = Uri.parse('http://10.0.2.2:8080/users/1');
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      HttpStatus.accepted;
+      dynamic data = jsonDecode(response.body) as Map<String, dynamic>;
       setState(() => _userData = data);
       return;
     }
